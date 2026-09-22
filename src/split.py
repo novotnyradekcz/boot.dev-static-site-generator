@@ -37,6 +37,7 @@ def split_nodes_image(old_nodes: list[TextNode]) -> list[TextNode]:
                     new_nodes.append(TextNode(split_text[0], TextType.TEXT))
                     new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
                     text = split_text[1]
+                new_nodes.append(TextNode(text, TextType.TEXT))
     return list(filter(lambda node: node.text != "", new_nodes))
 
 def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
