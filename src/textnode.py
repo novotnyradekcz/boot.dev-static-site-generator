@@ -39,8 +39,8 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
         case TextType.IMAGE:
             return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
 
-def extract_markdown_images(text: str) -> list[tuple[str]]:
+def extract_markdown_images(text: str) -> list[tuple[str,str]]:
     return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
-def extract_markdown_links(text: str) -> list[tuple[str]]:
+def extract_markdown_links(text: str) -> list[tuple[str,str]]:
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
