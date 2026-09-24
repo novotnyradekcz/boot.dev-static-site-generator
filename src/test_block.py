@@ -1,6 +1,11 @@
 import unittest
 
-from block import BlockType, block_to_block_type, markdown_to_blocks
+from block import (
+    BlockType,
+    block_to_block_type,
+    markdown_to_blocks,
+    markdown_to_html_node,
+)
 
 
 class TestBlocks(unittest.TestCase):
@@ -97,3 +102,65 @@ else:
     def test_paragraph_block_to_blocktype(self):
         block = "This is a paragraph."
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+
+    def test_paragraphs(self):
+        md = """
+This is **bolded** paragraph
+text in a p
+tag here
+
+This is another paragraph with _italic_ text and `code` here
+
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+
+    def test_codeblock(self):
+        md = """
+```
+This is text that _should_ remain
+the **same** even with inline stuff
+```
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
+    def test_quote_and_lists(self):
+        md = """
+This is just a **paragraph**.
+A _regular_ **paragraph**.
+
+> However,
+> this is a **quote**.
+> A very wise quote.
+
+And now something a little bit different:
+
+- A **list**
+- of many
+- things
+- _unordered_
+
+1. And also
+2. _ordered_.
+
+**How fun!**
+"""
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is just a <b>paragraph</b>. A <i>regular</i> <b>paragraph</b>.</p><blockquote>However, this is a <b>quote</b>. A very wise quote.</blockquote><p>And now something a little bit different:</p><ul><li>A <b>list</b></li><li>of many</li><li>things</li><li><i>unordered</i></li></ul><ol><li>And also</li><li><i>ordered</i>.</li></ol><p><b>How fun!</b></p></div>",
+        )
